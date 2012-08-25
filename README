@@ -1,0 +1,29 @@
+SSLConn
+
+This is an experimental golang (CGO) wrapper around OpenSSL.
+
+The crypto/tls package does not support (1) SSLv2 compatible handshakes,
+so this is an attempt to use OpenSSL in golang. The reason SSLv2 handshake
+is desired is for compatibility (2) with a variety of clients.
+
+The suggested approach is to provide SSL termination upstream, however 
+some protocols upgrade plain text connections using STARTTLS (3) which 
+would require a smart and protocol aware SSL terminator.
+
+This wrapper only exposes only a tiny subset of the OpenSSL API, just
+enough to enable the use-case described above.
+
+Examples: github.com/vadims/sslconn-examples
+
+Implementation Details
+
+In order to multiplex a OpenSSL connection the underlying IO needs to
+be non blocking. To support that, a NonBlockingReader and NonBlockingWriter
+were implemented to provide the necessary semantics.
+
+Most of the OpenSSL integration is done in C to avoid locking the OS 
+thread required for error checking (thread locals.) 
+
+1. http://code.google.com/p/go/issues/detail?id=3930
+2. http://www.openssl.org/docs/ssl/SSL_CTX_new.html
+3. http://en.wikipedia.org/wiki/STARTTLS
