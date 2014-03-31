@@ -134,6 +134,14 @@ int SSLConn_do_handshake(SSLConn *conn, SSLConnError *err) {
   return handle_ret_code(conn, err, code);
 }
 
+int SSLConn_get_finished(SSLConn *conn, void *buf, int count){
+  return SSL_get_finished(conn->ssl,buf,count);
+}
+
+int SSLConn_get_peer_finished(SSLConn *conn, void *buf, int count){
+  return SSL_get_peer_finished(conn->ssl,buf,count);
+}
+
 int SSLConn_shutdown(SSLConn *conn, SSLConnError *err) {
   int code, result;
 

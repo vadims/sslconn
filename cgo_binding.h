@@ -47,6 +47,8 @@ extern int SSLConn_write(SSLConn *conn, const void *buf, int num,
 extern void SSLConn_free(SSLConn *conn);
 extern int SSLConn_do_handshake(SSLConn *conn, SSLConnError *err);
 extern int SSLConn_shutdown(SSLConn *conn, SSLConnError *err);
+extern int SSLConn_get_finished(SSLConn *conn, void *buf, int count);
+extern int SSLConn_get_peer_finished(SSLConn *conn, void *buf, int count);
 
 extern EVP_PKEY *SSLConn_EVP_PKEY_new(void *buf, int len, SSLConnError *err);
 extern X509 *SSLConn_X509_new(void *buf, int len, SSLConnError *err);
