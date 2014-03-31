@@ -55,7 +55,7 @@ func init() {
 	C.SSLConn_init()
 }
 
-// Creates new SSL connection for the underlying reader and writer. 
+// Creates new SSL connection for the underlying reader and writer.
 func NewConn(reader io.Reader, writer io.Writer,
 	config *Config, server bool) (*Conn, error) {
 	c := &Conn{}
@@ -89,6 +89,20 @@ func (c *Conn) Handshake() error {
 			(*C.SSLConnError)(unsafe.Pointer(e)))
 	})
 	return err
+}
+
+func (c *Conn) GetFinishedMessage(maxLength int) []byte {
+	b := make([]byte, maxLength)
+	header := (*reflect.SliceHeader)((unsafe.Pointer(&b)))
+	length := C.SSLConn_get_finished(c.sslConn, unsafe.Pointer(header.Data), C.int(header.Len))
+	return b[:int(length)]
+}
+
+func (c *Conn) GetPeerFinishedMessage(maxLength int) []byte {
+	b := make([]byte, maxLength)
+	header := (*reflect.SliceHeader)((unsafe.Pointer(&b)))
+	length := C.SSLConn_get_peer_finished(c.sslConn, unsafe.Pointer(header.Data), C.int(header.Len))
+	return b[:int(length)]
 }
 
 func (c *Conn) Read(b []byte) (int, error) {
